@@ -1,13 +1,9 @@
 package com.jpmorgan.cakeshop.controller;
 
 import com.jpmorgan.cakeshop.error.APIException;
-import com.jpmorgan.cakeshop.model.APIData;
-import com.jpmorgan.cakeshop.model.APIError;
-import com.jpmorgan.cakeshop.model.APIResponse;
-import com.jpmorgan.cakeshop.model.DirectTransactionRequest;
-import com.jpmorgan.cakeshop.model.Transaction;
-import com.jpmorgan.cakeshop.model.TransactionResult;
+import com.jpmorgan.cakeshop.model.*;
 import com.jpmorgan.cakeshop.model.json.TransPostJsonResquest;
+import com.jpmorgan.cakeshop.model.json.TransRawPostJsonRequest;
 import com.jpmorgan.cakeshop.service.TransactionService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -127,5 +123,25 @@ public class TransactionController extends BaseController {
         WebAsyncTask asyncTask = new WebAsyncTask(callable);
         return asyncTask;
     }
+
+  @ApiImplicitParams({
+    @ApiImplicitParam(name = "data", required = false, value = "Required. Signed raw transaction data", dataType = "java.ulang.String", paramType = "body")
+  })
+  @RequestMapping("/save/raw")
+  public WebAsyncTask<ResponseEntity<APIResponse>> transactRaw(
+    @RequestBody final TransRawPostJsonRequest jsonRequest) throws APIException {
+
+    Callable<ResponseEntity<APIResponse>> callable = () -> {
+      DirectRawTransactionRequest req = new DirectRawTransactionRequest(jsonRequest.getData());
+
+      TransactionResult result = transactionService.directTransactRaw(req);
+      APIResponse res = new APIResponse();
+      res.setData(result.toAPIData());
+      ResponseEntity<APIResponse> response = new ResponseEntity<>(res, HttpStatus.OK);
+      return response;
+    };
+    WebAsyncTask asyncTask = new WebAsyncTask(callable);
+    return asyncTask;
+  }
 
 }

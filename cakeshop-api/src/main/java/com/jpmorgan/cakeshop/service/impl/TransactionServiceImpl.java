@@ -3,14 +3,8 @@ package com.jpmorgan.cakeshop.service.impl;
 import static com.jpmorgan.cakeshop.util.AbiUtils.*;
 
 import com.jpmorgan.cakeshop.error.APIException;
-import com.jpmorgan.cakeshop.model.Contract;
-import com.jpmorgan.cakeshop.model.ContractABI;
-import com.jpmorgan.cakeshop.model.DirectTransactionRequest;
-import com.jpmorgan.cakeshop.model.Event;
-import com.jpmorgan.cakeshop.model.RequestModel;
-import com.jpmorgan.cakeshop.model.Transaction;
+import com.jpmorgan.cakeshop.model.*;
 import com.jpmorgan.cakeshop.model.Transaction.Status;
-import com.jpmorgan.cakeshop.model.TransactionResult;
 import com.jpmorgan.cakeshop.service.ContractService;
 import com.jpmorgan.cakeshop.service.EventService;
 import com.jpmorgan.cakeshop.service.GethHttpService;
@@ -232,7 +226,7 @@ public class TransactionServiceImpl implements TransactionService {
         return tx;
     }
 
-    @Override
+  @Override
     public TransactionResult directTransact(DirectTransactionRequest request) throws APIException {
         if (defaultFromAddress == null) {
             defaultFromAddress = walletService.list().get(0).getAddress();
@@ -244,5 +238,13 @@ public class TransactionServiceImpl implements TransactionService {
         Map<String, Object> readRes = geth.executeGethCall("eth_sendTransaction", request.toGethArgs());
         return new TransactionResult((String) readRes.get("_result"));
     }
+
+  @Override
+  public TransactionResult directTransactRaw(DirectRawTransactionRequest request) throws APIException {
+
+      Map<String, Object> readRes = geth.executeGethCall("eth_sendRawTransaction", request.toGethArgs());
+      return new TransactionResult((String) readRes.get("_result"));
+
+  }
 
 }

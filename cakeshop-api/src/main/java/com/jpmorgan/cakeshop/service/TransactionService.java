@@ -1,6 +1,7 @@
 package com.jpmorgan.cakeshop.service;
 
 import com.jpmorgan.cakeshop.error.APIException;
+import com.jpmorgan.cakeshop.model.DirectRawTransactionRequest;
 import com.jpmorgan.cakeshop.model.DirectTransactionRequest;
 import com.jpmorgan.cakeshop.model.Transaction;
 import com.jpmorgan.cakeshop.model.TransactionResult;
@@ -66,7 +67,16 @@ public interface TransactionService {
 	 */
     public TransactionResult directTransact(DirectTransactionRequest request) throws APIException;
 
-    /**
+  /**
+   * Send Raw Transactions
+   * @param request
+   * @return {@link TransactionResult}
+   * @throws com.jpmorgan.cakeshop.error.APIException
+   */
+  public TransactionResult directTransactRaw(DirectRawTransactionRequest request) throws APIException;
+
+
+  /**
      * Load the private payload, if the Transaction is a private one.
      *
      * NOTE: Replaces tx.input with the private version. If you want to preserve the original, hash, you must do so yourself.
